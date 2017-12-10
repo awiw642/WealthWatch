@@ -1,3 +1,5 @@
+import { localAuth } from '../authentication/authentication';
+
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -7,25 +9,27 @@ const { _secret } = require('../../config');
 
 // Helper functions
 const generateToken = user => {
-  return jwt.sign(user, _secret, { expiresIn: 10080 });
+  return jwt.sign(user, _secret, { expiresIn: Math.floor(Date.now() / 1000) + 60 * 60 });
 };
+/*********************************************************/
 
-router.post('/login', (req, res) => {
-  console.log(req.body);
-  res.json('LOGIN');
+router.post('/login', localAuth(), (req, res) => {
+  const token = generateToken(req.body.username);
+  res.json({ message: 'Login successful', token });
 });
 
 router.post('/signup', (req, res) => {
   const email = req.body.email;
   const name = req.body.name;
   const password = req.body.password;
+  const newUser = { email, name, password };
 
   User.findOne({ email })
     .then(user => {
       if (user) {
         res.status(409).json({ message: 'Email taken' });
       } else {
-        User.create(/*Add user here*/).then(user => {
+        User.create(newUser).then(user => {
           const token = generateToken(user);
           res.status(201).json({ message: 'Registration succcessful', token });
         });

@@ -22,7 +22,7 @@ app.use(express.static(__dirname + '/../client/public'));
 
 // Use Routes here.....
 app.use('/auth', auth);
-// **********************
+/************************/
 
 app.get('/', (req, res) => {
   res.json('Hello World');
