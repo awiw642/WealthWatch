@@ -1,4 +1,4 @@
-import { localAuth } from '../authentication/authentication';
+const { localAuth } = require('../authentication/authentication');
 
 const express = require('express');
 const router = express.Router();
@@ -13,7 +13,7 @@ const generateToken = user => {
 };
 /*********************************************************/
 
-router.post('/login', localAuth(), (req, res) => {
+router.post('/login', localAuth, (req, res) => {
   const token = generateToken(req.body.username);
   res.json({ message: 'Login successful', token });
 });
