@@ -1,4 +1,5 @@
 //Import your routes here
+const auth = require('./routes/authentication').auth;
 // ***********************
 var axios = require('axios');
 const express = require('express');
@@ -20,6 +21,12 @@ const port = app.get('port');
 app.use(express.static(__dirname + '/../client/public'));
 
 // Use Routes here.....
+app.use('/auth', auth);
+// **********************
+
+app.get('/', (req, res) => {
+  res.json('Hello World');
+});
 
 app.listen(port, () => {
   console.log('Express is listening on port 1337');
