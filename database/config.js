@@ -7,7 +7,7 @@ const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds135926.ml
 
 mongoose
   .connect(uri, {
-    useMongoClient: true
+    useMongoClient: true,
   })
   .then(() => console.log('database connected'))
   .catch(err => {

@@ -1,28 +1,11 @@
 const mongoose = require('mongoose');
-const database = require('../config');
+
+mongoose.Promise = global.Promise;
+
 const bcrypt = require('bcrypt');
 const isEmail = require('validator/lib/isEmail');
 const { recurringSchema } = require('./recurring.js');
 const { oneTimeSchema } = require('./oneTime.js');
-
-// const recurringSchema = new mongoose.Schema({
-//   expense: {
-//     type: String,
-//     unique: true
-//   },
-//   amount: Number,
-//   period: String,
-//   category: String,
-//   startDate: Date
-// });
-// expense: Hulu, amount: 12, period: monthly/daily/weekly cat: Entertainment
-
-// const oneTimeSchema = new mongoose.Schema({
-//   expense: String,
-//   amount: Number,
-//   date: Date,
-//   category: String
-// });
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -47,13 +30,12 @@ const userSchema = new mongoose.Schema({
   budget: Number,
   googleId: String,
   googleToken: String,
-  recurring: [recurringSchema],
-  oneTime: [oneTimeSchema],
+  recurring: [{ type: mongoose.Schema.ObjectId, ref: recurringSchema }],
+  oneTime: [{ type: mongoose.Schema.ObjectId, ref: oneTimeSchema }],
   imageUrl: String,
 });
 
 userSchema.methods.comparePassword = function (password, callback) {
-  console.log('Compare password:', this.password);
   bcrypt.compare(password, this.password, (error, isMatch) => {
     if (error) {
       return callback(error);
@@ -74,5 +56,3 @@ userSchema.pre('save', function (next) {
 });
 
 module.exports.User = mongoose.model('User', userSchema);
-// module.exports.One = mongoose.model('One', oneTimeSchema);
-// module.exports.Rec = mongoose.model('Rec', recurringSchema);
